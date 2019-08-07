@@ -1,0 +1,6 @@
+.donotdelete/
+test-results/
+.vscode
+node_modules/
+TypeScript/
+reports/

@@ -1,0 +1,6 @@
+test={"locator":"id=identifierId","desc":"identifierId email"}
+div.div2111={"locator":"xpath=//div[@id='view_container']/div/div/div[2]/div/div/div/form/span/section/div/span/div[3]","desc":"Text DIV2111"}
+test1={"locator":"xpath=//div[@id='identifierNext']/span/span","desc":"Text SPAN1111"}
+test2={"locator":"name=password","desc":"QAS@2019 password"}
+div.div111_2={"locator":"xpath=//div[@id='view_container']/div/div/div[2]/div","desc":"Text DIV111"}
+span.span1111_1_1={"locator":"xpath=//div[@id='passwordNext']/span","desc":"Text SPAN1111"}

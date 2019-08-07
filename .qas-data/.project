@@ -1,0 +1,29 @@
+{
+    "additionalFields": {
+        "android": {
+            "appactivity": "com.qmetry.bank.bankingapplication.HomePageActivity",
+            "apppackage": "com.qmetry.bank.bankingapplication"
+        },
+        "mobileweb": {
+            "baseurl": "http://www.gmail.com"
+        },
+        "web": {
+            "baseurl": "http://www.gmail.com"
+        },
+        "windows": {
+            "appname": "Microsoft.WindowsCalculator_8wekyb3d8bbwe!App"
+        }
+    },
+    "framework": "behave",
+    "language": "python",
+    "projectSettings": {
+        "projectName": "Python_Behave",
+        "projectPath": "c:\\Users\\rinkesh.jain\\Desktop\\Sample"
+    },
+    "projectTypes": [
+        "web",
+        "mobileweb",
+        "windows",
+        "android"
+    ]
+}
