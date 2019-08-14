@@ -1,0 +1,26 @@
+{
+    "perfectoServer": {
+        "host": "",
+        "username": "",
+        "password": "",
+        "https": true
+    },
+    "desiredCapabilities": {
+        "platformName": "Android",
+        "platformVersion": "",
+        "appPackage": "com.qmetry.bank.bankingapplication",
+        "appActivity": "com.qmetry.bank.bankingapplication.HomePageActivity",
+        "deviceName": "emulator-5554",
+        "noReset": true,
+        "automationName": "UiAutomator2",
+        "browserName": "",
+        "fullReset": false,
+        "autoWebview": false,
+        "newCommandTimeout": "3000",
+        "idleTimeout": "3000"
+    },
+    "type": "automaticServer",
+    "host": "localhost",
+    "port": "4723",
+    "path": "/wd/hub"
+}
