@@ -32,6 +32,7 @@ class BaseDriver:
         selenium_port = ConfigurationsManager().get_str_for_key(ApplicationProperties.REMOTE_PORT)
         driver_capabilities["browserName"]=""
         driver = appium_webdriver.Remote(selenium_server + selenium_port + "/wd/hub", driver_capabilities)
+        driver.close()
         BaseDriver.__driver = pafwebdriver.PAFAppiumWebDriver(driver)
         BaseDriver.__driver.implicitly_wait(ConfigurationsManager().get_str_for_key(ApplicationProperties.SELENIUM_WAIT_TIMEOUT))
 

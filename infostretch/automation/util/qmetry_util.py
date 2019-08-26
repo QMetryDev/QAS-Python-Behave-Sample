@@ -116,6 +116,69 @@ class UploadResult:
                         print(response['errorMessage'])
                         return schedule.CancelJob
 
+    def loadQTM4J4xCloudParams(self,params):
+        params['format'] = "qaf"
+
+        if((ConfigurationsManager().get_str_for_key("automation.qmetry.aliasName"))!=""):
+            params['aliasName'] = ConfigurationsManager().get_str_for_key("automation.qmetry.aliasName")
+        if((ConfigurationsManager().get_str_for_key("automation.qmetry.testCycleToReuse"))!=""):
+            params['testCycleToReuse'] = ConfigurationsManager().get_str_for_key("automation.qmetry.testCycleToReuse")
+        if((ConfigurationsManager().get_str_for_key("automation.qmetry.environment"))!=""):
+            params['environment'] = ConfigurationsManager().get_str_for_key("automation.qmetry.environment")
+        if((ConfigurationsManager().get_str_for_key("automation.qmetry.build"))!=""):
+            params['build'] = ConfigurationsManager().get_str_for_key("automation.qmetry.build")
+
+        fields = {
+		'testCycle': {
+			'labels': ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.labels").split(',') if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.labels"))!="" else [],
+			'components':   ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.components").split(',') if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.components"))!="" else [],
+			'priority':  ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.priority") if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.priority"))!="" else '',
+			'status':  ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.status") if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.status"))!=""  else '',
+			'sprintId': ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.sprintId") if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.sprintId"))!="" else '',
+			'fixVersionId': ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.fixVersionId") if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.fixVersionId"))!=""  else '',
+			'summary': ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.summary") if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.summary"))!="" else ''
+		},
+		'testCase': {
+			'labels': ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.labels").split(',') if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.labels"))!="" else [],
+			'components': ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.components").split(',') if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.components"))!="" else [],
+			'priority': ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.priority") if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.priority"))!=""  else '',
+			'status':  ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.status") if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.status"))!="" else '',
+			'sprintId': ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.sprintId") if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.sprintId"))!="" else '',
+			'fixVersionId':  ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.fixVersionId") if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.fixVersionId"))!="" else ''
+		}
+	}
+        params['fields'] = fields
+        print(" params1 : ")
+        print(params)
+
+    def getQTM4J4xUrl(self,id,apiKey):
+        reqUrl = "https://qtmcloud.qmetry.com/rest/api/automation/importresult/track?trackingId=" + id
+        headers = {
+            'Content-Type': "application/json",
+            'apiKey':apiKey
+        }
+        response = requests.request("GET", reqUrl, headers=headers)
+        response = json.loads(response.text)
+        print(response)
+
+        if (response['processStatus']):
+            if (response['importStatus'] != 'In Progress'):
+                if (response['importStatus'] == "SUCCESS"):
+                     print(response['summary']['testCycleIssueKey'])
+                     print(response['detailedMessage'])
+                     sys.exit()
+                     return schedule.CancelJob
+                elif (response['importStatus'] == "FAILED"):
+                     print(response['detailedMessage'])
+                     sys.exit()
+                     return schedule.CancelJob
+                else:
+                    if(response['summary']['testCycleIssueKey']):
+                        print(response['detailedMessage'])
+                    else:
+                        print(response['detailedMessage'])
+                        return schedule.CancelJob
+
 
     def uploadFile(self):
         self.createZipOfResultDir()
@@ -156,6 +219,30 @@ class UploadResult:
                                    headers=headers, files=files)
             print(res)
             print(res.content)
+        elif integrationType == "QTM4J4x" :
+            print("QTM4J4x CLoud")
+            headers['Content-Type'] = "application/json"
+            headers['apiKey'] = apiKey
+            params['isZip'] = 'true'
+            self.loadQTM4J4xCloudParams(params)
+            res = requests.request("post", url, data=json.dumps(params),
+                                   headers=headers)
+
+            res = json.loads(res.text)
+            requestUrl = res['url']
+            trackingId = res['trackingId']
+
+            headers = {}
+            params = {}
+            headers['Content-Type'] = "multipart/form-data"
+            res1 = requests.request("put", requestUrl, data=params,
+                                    headers=headers, files=files)
+
+            schedule.every(2).seconds.do(self.getQTM4J4xUrl,id=trackingId,apiKey=apiKey)
+            while 1:
+                schedule.run_pending()
+                time.sleep(1)
+            print(res1)
         else:
             print("QTM4J CLoud")
             headers['Content-Type'] = "application/json"
