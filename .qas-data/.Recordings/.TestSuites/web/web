@@ -317,7 +317,7 @@
                     "key"
                 ]
             ],
-            "input": "${Password}",
+            "input": "<Password>",
             "status": "NotRun",
             "elementKey": "password.qas2019",
             "elementDesc": "QAS@2019 password",
@@ -400,7 +400,7 @@
                     "key"
                 ]
             ],
-            "input": "${Password}",
+            "input": "<Password>",
             "status": "NotRun",
             "elementKey": "password.qas2019",
             "elementDesc": "QAS@2019 password",

@@ -9,9 +9,9 @@ Scenario Outline: Mobile
   Then verify "test" value is "demoqas2019@gmail.com"
   When click on "test1"
   And  clear "test2"
-  And sendKeys "${Password}" into "test2"
+  And sendKeys "<Password>" into "test2"
   # And click on "div.div111_2"
-  Then verify "test2" value is "${Password}"
+  Then verify "test2" value is "<Password>"
   When click on "span.span1111_1_1"
 
 

@@ -313,7 +313,7 @@
                     "key"
                 ]
             ],
-            "input": "${Password}",
+            "input": "<Password>",
             "status": "NotRun",
             "elementKey": "password.qas2019",
             "elementDesc": "QAS@2019 password",
@@ -396,7 +396,7 @@
                     "key"
                 ]
             ],
-            "input": "${Password}",
+            "input": "<Password>",
             "status": "NotRun",
             "elementKey": "password.qas2019",
             "elementDesc": "QAS@2019 password",
@@ -447,16 +447,16 @@
     "capabilities": {
         "remoteUrl": "http://www.gmail.com",
         "type": "mobileweb",
-        "selectDevice": "iPhone X",
+        "selectDevice": "iPad",
         "isRemote": false,
         "remoteHubUrl": "http://127.0.0.1:4444/wd/hub/",
         "details": {
             "deviceMetrics": {
-                "name": "iPhone X",
-                "width": 375,
-                "height": 812,
-                "pixelRatio": 3,
-                "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1"
+                "name": "iPad",
+                "width": 768,
+                "height": 1024,
+                "pixelRatio": 2,
+                "userAgent": "Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1"
             }
         },
         "mode": "play",
@@ -479,5 +479,6 @@
             "Password": "QAS@2019"
         }
     ],
+    "isTCValid": true,
     "executionStatus": "NotRun"
 }
