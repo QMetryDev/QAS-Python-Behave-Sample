@@ -4,3 +4,15 @@ test1={"locator":"xpath=//div[@id='identifierNext']/span/span","desc":"Text SPAN
 test2={"locator":"name=password","desc":"QAS@2019 password"}
 div.div111_2={"locator":"xpath=//div[@id='view_container']/div/div/div[2]/div","desc":"Text DIV111"}
 span.span1111_1_1={"locator":"xpath=//div[@id='passwordNext']/span","desc":"Text SPAN1111"}
+
+button.button={"locator":"xpath=//button","desc":"BUTTON BUTTON"}
+text.txtusername={"locator":"id=txtUsername","desc":"Input for txtUsername"}
+password.txtpassword={"locator":"id=txtPassword","desc":"txtPassword password"}
+button.btnlogin={"locator":"id=btnLogin","desc":"BUTTON btnLogin"}
+operation.success.message={"locator":"xpath=//div/div","desc":"Text DIV"}
+number.enteramountfordebit={"locator":"xpath=//input[@placeholder='Enter amount for debit']","desc":"Enter amount for debit number"}
+button.debit={"locator":"xpath=//span/button","desc":"BUTTON DEBIT"}
+number.enteramountforcredit={"locator":"xpath=//input[@placeholder='Enter amount for credit']","desc":"Enter amount for credit number"}
+button.logout={"locator":"xpath=//button","desc":"BUTTON LOGOUT"}
+button.credit={"locator":"xpath=.//button[text()='Credit']","desc":"BUTTON CREDIT"}
+text.currentbalance={"locator":"id=user-globe-rank","desc":"Current Balance"}

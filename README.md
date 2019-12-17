@@ -6,18 +6,10 @@
 
 1.Install python latest version and set environment variable to execute pip and behave.
 
-2.Python must be above 3.0 version.you can use pip with `alias name` like 3 etc based on your python installed.
-
-3.Compatible chromedriver path should be set in your system and in application.properties file if it is present in your project folder for command line execution.
-
-Python must be above 3.0 version.you can use pip with `alias name` like 3 etc based your pip installed.
 * All the dependencies use following command.
 ```
-pip(Alias Name) install -r requirements.txt
-
-brew tap homebrew/cask && brew cask install chromedriver
+pip install -r requirements.txt
 ```
-
 it will install all dependencies from requirements.txt and You can add your own dependencies also.
 #### Now just run the test , switched to the Features folder.Use the following commands
 
