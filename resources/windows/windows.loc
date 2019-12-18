@@ -1,0 +1,6 @@
+
+..window..window.2...group..group.5...button.2.={"locator":"xpath=/Window/Window[2]/Group/Group[5]/Button[2]","desc":"..window..window.2...group..group.5...button.2."}
+..window..window.2...group..group.4...button.4.={"locator":"xpath=/Window/Window[2]/Group/Group[4]/Button[4]","desc":"..window..window.2...group..group.4...button.4."}
+..window..window.2...group..group.5...button.4.={"locator":"xpath=/Window/Window[2]/Group/Group[5]/Button[4]","desc":"..window..window.2...group..group.5...button.4."}
+..window..window.2...group..group.4...button.5.={"locator":"xpath=/Window/Window[2]/Group/Group[4]/Button[5]","desc":"..window..window.2...group..group.4...button.5."}
+..window..window.2...group..text.2.={"locator":"xpath=/Window/Window[2]/Group/Text[2]","desc":"..window..window.2...group..text.2."}
