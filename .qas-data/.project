@@ -5,10 +5,10 @@
             "apppackage": "com.qmetry.bank.bankingapplication"
         },
         "mobileweb": {
-            "baseurl": "http://www.gmail.com"
+            "baseurl": "https://qas.qmetry.com/bank/"
         },
         "web": {
-            "baseurl": "http://www.gmail.com"
+            "baseurl": "https://qas.qmetry.com/bank/"
         },
         "windows": {
             "appname": "Microsoft.WindowsCalculator_8wekyb3d8bbwe!App"
