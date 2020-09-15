@@ -33,7 +33,8 @@ class PAFWebDriver(RemoteWebDriver):
                                  keep_alive=keep_alive, file_detector=file_detector, options=options)
 
         if ConfigurationsManager().contains_key(ApplicationProperties.WEBDRIVER_COMMAND_LISTENERS):
-            class_name = ConfigurationsManager().get_str_for_key(ApplicationProperties.WEBDRIVER_COMMAND_LISTENERS)
+            class_name = ConfigurationsManager().get_str_for_key(
+                ApplicationProperties.WEBDRIVER_COMMAND_LISTENERS)
             self.__listeners.append(load_class(class_name)())
 
     def start_session(self, capabilities, browser_profile=None):
@@ -50,8 +51,10 @@ class PAFWebDriver(RemoteWebDriver):
             value = ConfigurationsManager().get_str_for_key(key, default_value=key)
             by, value = get_find_by(value)
 
-        web_element = super(PAFWebDriver, self).find_element(by=by, value=value)
-        paf_web_element = pafwebelement.PAFWebElement.create_instance_using_webelement(web_element)
+        web_element = super(PAFWebDriver, self).find_element(
+            by=by, value=value)
+        paf_web_element = pafwebelement.PAFWebElement.create_instance_using_webelement(
+            web_element)
         paf_web_element._parent = self
         paf_web_element.by = by
         paf_web_element.locator = value
@@ -63,10 +66,12 @@ class PAFWebDriver(RemoteWebDriver):
             value = ConfigurationsManager().get_str_for_key(key, default_value=key)
             by, value = get_find_by(value)
 
-        web_elements = super(PAFWebDriver, self).find_elements(by=by, value=value)
+        web_elements = super(PAFWebDriver, self).find_elements(
+            by=by, value=value)
         paf_web_elements = []
         for web_element in web_elements:
-            paf_web_element = pafwebelement.PAFWebElement.create_instance_using_webelement(web_element)
+            paf_web_element = pafwebelement.PAFWebElement.create_instance_using_webelement(
+                web_element)
             paf_web_element._parent = self
             paf_web_element.by = by
             paf_web_element.locator = value
