@@ -8,6 +8,7 @@ from infostretch.automation.ui.webdriver.paf_web_element import PAFWebElement
 from infostretch.automation.core.resources_manager import ResourcesManager
 from infostretch.automation.keys.application_properties import ApplicationProperties
 from infostretch.automation.util.locator_util import LocatorUtil
+from selenium.webdriver.common.keys import Keys
 #import ConfigParser
 
 #config.read('ConfigFile.properties')
@@ -32,7 +33,7 @@ def comment(context, value):
 @step(u'change locale to: "(.*)"')
 def comment(context, value):
     ResourcesManager.defaultLanguage=value
-    ResourcesManager().set_up();
+    ResourcesManager().set_up()
 
 @step('store "(?P<val>\S+)" into "(?P<var>.*)"')
 def store_into(context, val, var):
@@ -42,17 +43,23 @@ def store_into(context, val, var):
 def step_keys(context, text, loc):
     PAFWebElement(loc).send_keys(process(text))
 
+@step('select "(.*)" in "(.*)"')
+def select(context, text, loc):
+    PAFWebElement(loc).send_keys(process(text))
+
 @step('assert "(.*)" is present')
 def assert_is_present(context, loc):
     PAFWebElement(loc).assert_present()
 
 @step('assert link with text "(.*)" is present')
 def assert_link_with_test_is_present(context, link_text):
-    PAFWebElement('linkText=' + process(link_text)).assert_present()
+#     PAFWebElement('linkText=' + process(link_text)).assert_present()
+    BaseDriver().get_driver().find_element_by_link_text(process(link_text)).assert_present()
 
 @step('assert link with partial text "(.*)" is present')
 def assert_link_with_partial_text(context, link_text):
-    PAFWebElement('partialLinkText=' + process(link_text)).assert_present()
+#     PAFWebElement('partialLinkText=' + process(link_text)).assert_present()
+    BaseDriver().get_driver().find_element_by_partial_link_text(process(link_text)).assert_present()
 
 @step('verify "(?P<loc>\S+)" is present')
 def verify_is_present(context, loc):
@@ -60,11 +67,13 @@ def verify_is_present(context, loc):
 
 @step('verify link with text "(.*)" is present')
 def verify_link_with_text_is_present(context, link_text):
-     PAFWebElement('linkText=' + process(link_text)).verify_present()
+#      PAFWebElement('linkText=' + process(link_text)).verify_present()
+     BaseDriver().get_driver().find_element_by_link_text(process(link_text)).verify_present()
 
 @step('verify link with partial text "(.*)" is present')
 def verify_link_with_partial_text_is_present(context, link_text):
-    PAFWebElement('partialLinkText=' + process(link_text)).verify_present()
+#     PAFWebElement('partialLinkText=' + process(link_text)).verify_present()
+    BaseDriver().get_driver().find_element_by_partial_link_text(process(link_text)).verify_present()
 
 @step('assert "(.*)" is visible')
 def asseet_is_visible(context, loc):
@@ -366,3 +375,7 @@ def switch_to_parent_frame(context):
 def switch_to_platform(context, platform):
     BaseDriver().stop_driver()
     ResourcesManager().load_directory(["resources/"+process(platform)])
+
+@step('type Enter "(.*)"')
+def click_on(context, loc):
+    PAFWebElement(loc).send_keys(Keys.RETURN)

@@ -19,25 +19,30 @@ class BaseDriver:
         if BaseDriver.__driver is not None:
             self.stop_driver()
 
-
-        default_browser = ConfigurationsManager().get_str_for_key(ApplicationProperties.DRIVER_NAME)
+        default_browser = ConfigurationsManager().get_str_for_key(
+            ApplicationProperties.DRIVER_NAME)
         if 'appium' in default_browser.lower():
             self.__start_appium_webdriver()
         else:
             self.__start_webdriver()
 
     def __start_appium_webdriver(self):
-        driver_capabilities = ConfigurationsManager().get_dict_for_key('appium.additional.capabilities')
-        selenium_server = ConfigurationsManager().get_str_for_key(ApplicationProperties.REMOTE_SERVER)
-        selenium_port = ConfigurationsManager().get_str_for_key(ApplicationProperties.REMOTE_PORT)
-        driver_capabilities["browserName"]=""
-        driver = appium_webdriver.Remote(selenium_server + selenium_port + "/wd/hub", driver_capabilities)
-        driver.close()
+        driver_capabilities = ConfigurationsManager().get_dict_for_key(
+            'appium.additional.capabilities')
+        selenium_server = ConfigurationsManager().get_str_for_key(
+            ApplicationProperties.REMOTE_SERVER)
+        selenium_port = ConfigurationsManager().get_str_for_key(
+            ApplicationProperties.REMOTE_PORT)
+        driver_capabilities["browserName"] = ""
+        driver = appium_webdriver.Remote(
+            selenium_server + selenium_port + "/wd/hub", driver_capabilities)
         BaseDriver.__driver = pafwebdriver.PAFAppiumWebDriver(driver)
-        BaseDriver.__driver.implicitly_wait(ConfigurationsManager().get_str_for_key(ApplicationProperties.SELENIUM_WAIT_TIMEOUT))
+        BaseDriver.__driver.implicitly_wait(ConfigurationsManager(
+        ).get_str_for_key(ApplicationProperties.SELENIUM_WAIT_TIMEOUT))
 
     def __start_webdriver(self):
-        driver_name = ConfigurationsManager().get_str_for_key(ApplicationProperties.DRIVER_NAME)
+        driver_name = ConfigurationsManager().get_str_for_key(
+            ApplicationProperties.DRIVER_NAME)
         driver_name = str(driver_name).lower()
         driver_capabilities = ConfigurationsManager().get_str_for_key(
             driver_name[:driver_name.index('driver')]+'.additional.capabilities')
@@ -47,24 +52,35 @@ class BaseDriver:
         else:
             class_name = 'selenium.webdriver.{driver_name}.webdriver.WebDriver'. \
                 format(driver_name=driver_name[:driver_name.index('driver')])
-        #print("driver class" + class_name)
-        selenium_server = ConfigurationsManager().get_str_for_key(ApplicationProperties.REMOTE_SERVER)
-        selenium_port = ConfigurationsManager().get_str_for_key(ApplicationProperties.REMOTE_PORT)
+        
+        driver_name_value = ConfigurationsManager().get_str_for_key(
+            ApplicationProperties.DRIVER_NAME)
+        if driver_name_value.lower() == 'chromedriver':
+            execPath = ConfigurationsManager().get_str_for_key(
+                ApplicationProperties.CHROME_DRIVER_PATH)
+        else:
+             execPath = ConfigurationsManager().get_str_for_key(
+                ApplicationProperties.GECKO_DRIVER_PATH)
+        selenium_server = ConfigurationsManager().get_str_for_key(
+            ApplicationProperties.REMOTE_SERVER)
+        selenium_port = ConfigurationsManager().get_str_for_key(
+            ApplicationProperties.REMOTE_PORT)
         command_executor = selenium_server + selenium_port + "/wd/hub"
 
         if driver_capabilities is None:
             driver_class = load_class(class_name)()
         elif "remote" in ConfigurationsManager().get_str_for_key(ApplicationProperties.DRIVER_NAME).lower():
             driver_class = load_class(class_name)(command_executor=command_executor,
-                desired_capabilities=json.loads(driver_capabilities))
+                                                  desired_capabilities=json.loads(driver_capabilities))
         else:
-            driver_class = load_class(class_name)(
+            driver_class = load_class(class_name)(executable_path=execPath,
                 desired_capabilities=json.loads(driver_capabilities))
         env_base_url = ConfigurationsManager().get_str_for_key(
             ApplicationProperties.SELENIUM_BASE_URL)
         BaseDriver.__driver = pafwebdriver.PAFWebDriver(driver_class)
         BaseDriver.__driver.get(env_base_url)
-        BaseDriver.__driver.implicitly_wait(ConfigurationsManager().get_str_for_key(ApplicationProperties.SELENIUM_WAIT_TIMEOUT))
+        BaseDriver.__driver.implicitly_wait(ConfigurationsManager(
+        ).get_str_for_key(ApplicationProperties.SELENIUM_WAIT_TIMEOUT))
 
     def stop_driver(self):
         """

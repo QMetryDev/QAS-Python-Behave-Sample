@@ -30,3 +30,4 @@ class ApplicationProperties:
     WEBDRIVER_COMMAND_LISTENERS = "wd.command.listeners"
     WEBELEMENT_COMMAND_LISTENERS = "we.command.listeners"
     DRIVER_PATH = "webdriver.executable.path"
+    GECKO_DRIVER_PATH = "webdriver.gecko.driver"

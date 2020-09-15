@@ -40,7 +40,7 @@ def after_feature(context, feature):
 def after_all(context):
     base_environment.after_all(context)
     is_integration_enabled = ConfigurationsManager().get_str_for_key(
-            "automation.qmetry.enabled", "false")
+        "automation.qmetry.enabled", "false")
     if str(is_integration_enabled).lower() == "true" or str(is_integration_enabled).lower() == "yes":
         upload_result = UploadResult()
-        upload_result.uploadFile();
+        upload_result.uploadFile()

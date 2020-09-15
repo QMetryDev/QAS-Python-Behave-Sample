@@ -40,11 +40,13 @@ class BaseEnvironment:
         BaseDriver().stop_driver()
 
     def before_feature(self, context, feature):
-        current_feature_directory = os.path.join(os.getenv('REPORT_DIR'), 'json', re.sub('[^A-Za-z0-9]+', ' - ',re.sub('.feature','',feature.filename)))
+        current_feature_directory = os.path.join(os.getenv('REPORT_DIR'), 'json', re.sub(
+            '[^A-Za-z0-9]+', ' - ', re.sub('.feature', '', feature.filename)))
         create_directory(current_feature_directory)
         os.environ['CURRENT_FEATURE_DIR'] = current_feature_directory
 
-        ExecutionMetaInfo().add_test(re.sub('[^A-Za-z0-9]+', ' - ',re.sub('.feature','',feature.filename)))
+        ExecutionMetaInfo().add_test(
+            re.sub('[^A-Za-z0-9]+', ' - ', re.sub('.feature', '', feature.filename)))
 
         FeatureOverView().startTime = current_timestamp()
         FeatureOverView().add_class(feature.name)
@@ -54,7 +56,8 @@ class BaseEnvironment:
 
     def before_scenario(self, context, scenario):
         self.current_scenario = scenario
-        current_scenario_directory = os.path.join(os.getenv('CURRENT_FEATURE_DIR'),scenario.feature.name)
+        current_scenario_directory = os.path.join(
+            os.getenv('CURRENT_FEATURE_DIR'), scenario.feature.name)
         create_directory(current_scenario_directory)
         os.environ['CURRENT_SCENARIO_DIR'] = current_scenario_directory
 
@@ -76,10 +79,12 @@ class BaseEnvironment:
                     obj_step = Step()
                     obj_step.start_behave_step(step)
                     obj_step.stop_behave_step(step)
-                    Scenario(file_name=self.current_scenario.name).add_checkPoints(obj_step.obj_check_point)
+                    Scenario(file_name=self.current_scenario.name).add_checkPoints(
+                        obj_step.obj_check_point)
                     del obj_step
         else:
-            checkPoints = Scenario(file_name=self.current_scenario.name).checkPoints
+            checkPoints = Scenario(
+                file_name=self.current_scenario.name).checkPoints
             for checkPoint in checkPoints:
                 if checkPoint['type'] == MessageType.TestStepFail:
                     status_name = 'failed'
@@ -105,14 +110,21 @@ class BaseEnvironment:
 
         del self.obj_scenario_meta_info
         self.obj_scenario_meta_info = None
-        Scenario(file_name=scenario.name).seleniumLog = SeleniumLogStack().get_all_selenium_log()
+        Scenario(file_name=scenario.name).seleniumLog = SeleniumLogStack(
+        ).get_all_selenium_log()
+
+
+    BaseDriver().stop_driver()
+
 
     def before_step(self, context, step):
         self.current_step = step
+
 
     def after_step(self, context, step):
         obj_step = Step()
         obj_step.start_behave_step(step)
         obj_step.stop_behave_step(step)
-        Scenario(file_name=self.current_scenario.name).add_checkPoints(obj_step.obj_check_point)
+        Scenario(file_name=self.current_scenario.name).add_checkPoints(
+            obj_step.obj_check_point)
         del obj_step
