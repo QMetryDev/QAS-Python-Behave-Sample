@@ -10,7 +10,7 @@ from infostretch.automation.keys.application_properties import ApplicationProper
 from infostretch.automation.util.locator_util import LocatorUtil
 from selenium.webdriver.common.keys import Keys
 #import ConfigParser
-
+import time
 #config.read('ConfigFile.properties')
 
 use_step_matcher('re')
@@ -379,3 +379,16 @@ def switch_to_platform(context, platform):
 @step('type Enter "(.*)"')
 def click_on(context, loc):
     PAFWebElement(loc).send_keys(Keys.RETURN)
+
+@step('close "(.*)"')
+def close(context, loc) :
+    BaseDriver().get_driver().close()
+
+
+@step('switchWindow "(.*)"')
+def switchWindow(context, index) :
+    BaseDriver().get_driver().switch_to_window(BaseDriver().get_driver().window_handles[int(index)])
+
+@step('implicit wait "(.*)" millisec')
+def implicitWait(context, sec):
+    millisec = (int(sec)/1000);  time.sleep(millisec)

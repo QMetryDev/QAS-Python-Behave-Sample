@@ -181,7 +181,10 @@ class UploadResult:
                 'status':  ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.status") if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.status")) != "" else '',
                 'sprintId': ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.sprintId") if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.sprintId")) != "" else '',
                 'fixVersionId': ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.fixVersionId") if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.fixVersionId")) != "" else '',
-                'summary': ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.summary") if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.summary")) != "" else 'Automated Test Cycle'
+                'summary': ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.summary") if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.summary")) != "" else 'Automated Test Cycle',
+                'description': ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.description") if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.description")) != "" else '',
+                'assignee': ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.assignee") if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.assignee")) != "" else '',
+                'customFields': (json.loads(ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.customFields"))) if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcycle.customFields")) != "" else []
             },
             'testCase': {
                 'labels': ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.labels").split(',') if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.labels")) != "" else [],
@@ -189,7 +192,10 @@ class UploadResult:
                 'priority': ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.priority") if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.priority")) != "" else '',
                 'status':  ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.status") if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.status")) != "" else '',
                 'sprintId': ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.sprintId") if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.sprintId")) != "" else '',
-                'fixVersionId':  ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.fixVersionId") if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.fixVersionId")) != "" else ''
+                'fixVersionId':  ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.fixVersionId") if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.fixVersionId")) != "" else '',
+                'description':  ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.description") if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.description")) != "" else '',
+                'assignee': ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.assignee") if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.assignee")) != "" else '',
+                'customFields': (json.loads(ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.customFields"))) if (ConfigurationsManager().get_str_for_key("automation.qmetry.testcase.customFields")) != "" else []
             }
         }
         params['fields'] = fields
