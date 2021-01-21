@@ -9,6 +9,7 @@ from infostretch.automation.core.resources_manager import ResourcesManager
 from infostretch.automation.keys.application_properties import ApplicationProperties
 from infostretch.automation.util.locator_util import LocatorUtil
 from selenium.webdriver.common.keys import Keys
+from infostretch.automation.ui.webdriver.paf_find_by import get_find_by
 # from selenium.webdriver.common.action_chains import ActionChains
 #import ConfigParser
 import time
@@ -27,6 +28,53 @@ def remove_doller_key(text):
         leng = len(text)
         text=text[2:leng-1]
         return text
+
+def jsText():
+    text="""
+        function simulateDragDrop(sourceNode, destinationNode) {
+        var EVENT_TYPES = {
+        DRAG_END: 'dragend',
+        DRAG_START: 'dragstart',
+        DROP: 'drop'
+        }
+
+        function createCustomEvent(type) {
+        var event = new CustomEvent("CustomEvent")
+        event.initCustomEvent(type, true, true, null)
+        event.dataTransfer = {
+        data: {
+        },
+        setData: function(type, val) {
+        this.data[type] = val
+        },
+        getData: function(type) {
+        return this.data[type]
+        }
+        }
+        return event
+        }
+
+        function dispatchEvent(node, type, event) {
+        if (node.dispatchEvent) {
+        return node.dispatchEvent(event)
+        }
+        if (node.fireEvent) {
+        return node.fireEvent("on" + type, event)
+        }
+        }
+
+        var event = createCustomEvent(EVENT_TYPES.DRAG_START)
+        dispatchEvent(sourceNode, EVENT_TYPES.DRAG_START, event)
+
+        var dropEvent = createCustomEvent(EVENT_TYPES.DROP)
+        dropEvent.dataTransfer = event.dataTransfer
+        dispatchEvent(destinationNode, EVENT_TYPES.DROP, dropEvent)
+
+        var dragEndEvent = createCustomEvent(EVENT_TYPES.DRAG_END)
+        dragEndEvent.dataTransfer = event.dataTransfer
+        dispatchEvent(sourceNode, EVENT_TYPES.DRAG_END, dragEndEvent)
+        }"""
+    return text
 
 @step(u'COMMENT: "(.*)"')
 def comment(context, value):
@@ -412,19 +460,39 @@ def maximizeWindow(self):
 
 @step('drag "(.*)" and drop on "(.*)" perform')
 def dragAndDropPerform(context,source,target):
+    value = ConfigurationsManager().get_str_for_key(source, default_value=source)
+    getLocator = json.loads(value)['locator']
+    BaseDriver().get_driver().execute_script(jsText()+"simulateDragDrop(arguments[0], arguments[1])",Find_PAFWebElement(typeBy(getLocator),locator(getLocator)), Find_PAFWebElement(typeBy(target),locator(target)))
+    # ActionChains(BaseDriver().get_driver()).drag_and_drop(Find_PAFWebElement(typeBy(getLocator),locator(getLocator)), Find_PAFWebElement(typeBy(target),locator(target))).perform()
+    ActionChains(BaseDriver().get_driver()).click_and_hold(Find_PAFWebElement(typeBy(getLocator),locator(getLocator))).release(Find_PAFWebElement(typeBy(target),locator(target))).perform()
+
+@step('offsetdrag "(.*)" and drop on "(.*)" and "(.*)" perform')
+def offsetDragAndDropPerform(context,source,xtarget,ytarget):
+    value = ConfigurationsManager().get_str_for_key(source, default_value=source)
+    getLocator = json.loads(value)['locator']
+    # ActionChains(BaseDriver().get_driver()).drag_and_drop_by_offset(Find_PAFWebElement(typeBy(getLocator),locator(getLocator)),int(xtarget),int(ytarget)).perform()
+    ActionChains(BaseDriver().get_driver()).click_and_hold(Find_PAFWebElement(typeBy(getLocator),locator(getLocator))).move_by_offset(int(xtarget),int(ytarget)).release().perform()
+
+@step('dragSource "(.*)" and drop on value "(.*)" perform')
+def dragSourceOnValue(context,source,targetValue):
+    value = ConfigurationsManager().get_str_for_key(source, default_value=source)
+    getLocator = json.loads(value)['locator']
+    text="arguments[0].setAttribute('value',"+targetValue+");if(typeof(arguments[0].onchange) === 'function'){arguments[0].onchange('');}"
+    BaseDriver().get_driver().execute_script(text, Find_PAFWebElement(typeBy(getLocator),locator(getLocator)))
+
+def typeBy(target):
+    x = target.split("=")
+    s="="
+    typeBy=x[0]
+    return typeBy
+
+def locator(target):
     x = target.split("=")
     s="="
     typeBy=x[0]
     x.pop(0)
     loc = s.join(x)
-    # ActionChains(BaseDriver().get_driver()).drag_and_drop(BaseDriver().get_driver().find_element_by_xpath("//a[contains(text(),'BANK')]"), BaseDriver().get_driver().find_element_by_xpath("//ol[@id='bank']/li")).perform()
-    ActionChains(BaseDriver().get_driver()).click_and_hold(Find_PAFWebElement(PAFWebElement(source).by,PAFWebElement(source).locator)).release(Find_PAFWebElement(typeBy,loc)).perform()
-    # ActionChains(BaseDriver().get_driver()).click_and_hold(BaseDriver().get_driver().find_element_by_xpath("//a[contains(text(),'BANK')]")).release(BaseDriver().get_driver().find_element_by_xpath("//ol[@id='bank']/li")).perform()
-
-@step('offsetdrag "(.*)" and drop on "(.*)" and "(.*)" perform')
-def offsetDragAndDropPerform(context,source,xtarget,ytarget):
-    # ActionChains(BaseDriver().get_driver()).drag_and_drop_by_offset(source_element,int(xtarget),int(ytarget)).perform()
-    ActionChains(BaseDriver().get_driver()).click_and_hold(Find_PAFWebElement(PAFWebElement(source).by,PAFWebElement(source).locator)).move_by_offset(int(xtarget),int(ytarget)).release().perform()
+    return loc
 
 def Find_PAFWebElement(by,locator):
     loc = str(locator)
