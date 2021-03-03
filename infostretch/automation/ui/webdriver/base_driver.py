@@ -4,7 +4,9 @@ import json
 from infostretch.automation.ui.webdriver import paf_web_driver as pafwebdriver
 from infostretch.automation.core.configurations_manager import ConfigurationsManager
 from infostretch.automation.keys.application_properties import ApplicationProperties
-
+from selenium import webdriver
+import os
+from configparser import ConfigParser
 
 class BaseDriver:
     __driver = None
@@ -23,6 +25,8 @@ class BaseDriver:
             ApplicationProperties.DRIVER_NAME)
         if 'appium' in default_browser.lower():
             self.__start_appium_webdriver()
+        elif 'lambda' in default_browser.lower():
+            self.__start_lambda_webdriver()
         else:
             self.__start_webdriver()
 
@@ -40,6 +44,15 @@ class BaseDriver:
         BaseDriver.__driver.implicitly_wait(ConfigurationsManager(
         ).get_str_for_key(ApplicationProperties.SELENIUM_WAIT_TIMEOUT))
 
+    def __start_lambda_webdriver(self):
+        remote_url = ConfigurationsManager().get_str_for_key(
+            ApplicationProperties.REMOTE_SERVER)
+        driver_capabilities = ConfigurationsManager().get_str_for_key('lambda.additional.capabilities')
+        print("lambda capabilities : ")
+        print(json.loads(driver_capabilities))
+        driver = webdriver.Remote(command_executor=remote_url,desired_capabilities=json.loads(driver_capabilities))
+        BaseDriver.__driver = pafwebdriver.PAFWebDriver(driver)
+            
     def __start_webdriver(self):
         driver_name = ConfigurationsManager().get_str_for_key(
             ApplicationProperties.DRIVER_NAME)
@@ -70,6 +83,8 @@ class BaseDriver:
         if driver_capabilities is None:
             driver_class = load_class(class_name)()
         elif "remote" in ConfigurationsManager().get_str_for_key(ApplicationProperties.DRIVER_NAME).lower():
+            print("capabilities : ")
+            print(json.loads(driver_capabilities))
             driver_class = load_class(class_name)(command_executor=command_executor,
                                                   desired_capabilities=json.loads(driver_capabilities))
         else:
