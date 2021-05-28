@@ -175,16 +175,22 @@ class WaitForSelected(object):
     def __init__(self, element):
         self.element = element
 
-    def __call__(self, ignored):
-        return self.element.is_selected()
+    def __call__(self, driver):
+        try:
+            return _find_element(driver, self.element).is_selected()
+        except StaleElementReferenceException:
+            return False
 
 
 class WaitForNotSelected(object):
-    def __init__(self, element):
+    def __init__(self,element):
         self.element = element
 
-    def __call__(self, ignored):
-        return not self.element.is_selected()
+    def __call__(self, driver):
+        try:
+            return not _find_element(driver,self.element).is_selected()
+        except StaleElementReferenceException:
+            return False
 
 
 class WaitForAttribute(object):
