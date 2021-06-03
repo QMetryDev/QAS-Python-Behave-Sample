@@ -10,7 +10,6 @@ class FeatureOverView:
         if os.path.exists(self.__overview_file_path):
             with open(self.__overview_file_path) as f:
                 _dict = json.load(f)
-
             self.total_count = int(_dict['total'])
             self.pass_count = int(_dict['pass'])
             self.fail_count = int(_dict['fail'])
@@ -95,6 +94,10 @@ class FeatureOverView:
     def envInfo(self, value):
         self.__envInfo = value
 
+    def add_envInfo(self, envDetails):
+        self.__envInfo = envDetails
+        self.__dump_to_json()
+    
     def update_status(self, scenario_status):
         if scenario_status.lower() == 'passed':
             self.pass_count += 1

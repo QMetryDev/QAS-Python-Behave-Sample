@@ -433,7 +433,7 @@ class PAFWebElement(RemoteWebElement):
         outcome = True
         msg = self.get_description(msg)
         try:
-            self.verify_not_selected()
+            self.wait_for_not_selected()
         except TimeoutException:
             outcome = False
         self.report("notselected", outcome, msg)

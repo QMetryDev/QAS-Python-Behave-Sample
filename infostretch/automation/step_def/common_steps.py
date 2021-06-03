@@ -10,6 +10,8 @@ from infostretch.automation.keys.application_properties import ApplicationProper
 from infostretch.automation.util.locator_util import LocatorUtil
 from selenium.webdriver.common.keys import Keys
 from infostretch.automation.ui.webdriver.paf_find_by import get_find_by
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 # from selenium.webdriver.common.action_chains import ActionChains
 #import ConfigParser
 import time
@@ -479,6 +481,79 @@ def dragSourceOnValue(context,source,targetValue):
     getLocator = json.loads(value)['locator']
     text="arguments[0].setAttribute('value',"+targetValue+");if(typeof(arguments[0].onchange) === 'function'){arguments[0].onchange('');}"
     BaseDriver().get_driver().execute_script(text, Find_PAFWebElement(typeBy(getLocator),locator(getLocator)))
+
+@step('acceptAlert')
+def acceptAlert(self):
+    BaseDriver().get_driver().switch_to.alert.accept()
+
+@step('dismissAlert')
+def dismissAlert(self):
+    BaseDriver().get_driver().switch_to.alert.dismiss()
+
+@step('getAlertText')
+def getAlertText(self):
+    BaseDriver().get_driver().switch_to.alert.text
+
+@step('setAlertText "(.*)"')
+def setAlertText(context, text) :
+    BaseDriver().get_driver().switch_to.alert.send_keys(text)
+
+@step('waitForAlert "(.*)" millisec')
+def waitForAlert(context, timeout) :
+    try:
+        millisec = (int(timeout)/1000)
+        WebDriverWait(BaseDriver().get_driver(), int(millisec)).until(EC.alert_is_present(),
+                                    'Timed out waiting for PA creation ' +
+                                    'confirmation popup to appear.')
+    except TimeoutException:
+        print('')
+
+@step('verifyAlertNotPresent "(.*)" millisec')
+def verifyAlertNotPresent(context, timeout) :
+    try:
+        millisec = (int(timeout)/1000)
+        WebDriverWait(BaseDriver().get_driver(), int(millisec)).until(EC.alert_is_present(),
+                                    'Timed out waiting for PA creation ' +
+                                    'confirmation popup to appear.')
+        PAFWebElement().verify_present()
+    except TimeoutException:
+        print('')
+
+@step('verifyAlertPresent "(.*)" millisec')
+def verifyAlertPresent(context, timeout) :
+    try:
+        millisec = (int(timeout)/1000)
+        WebDriverWait(BaseDriver().get_driver(), int(millisec)).until(EC.alert_is_present(),
+                                    'Timed out waiting for PA creation ' +
+                                    'confirmation popup to appear.')
+    except TimeoutException:
+        PAFWebElement().verify_not_present()
+
+@step('Execute Java Script with data "(.*)"')
+def dragSourceOnValue(context,scriptData):
+    BaseDriver().get_driver().execute_script(scriptData)
+
+@step('Execute Async Java Script with data "(.*)"')
+def dragSourceOnValue(context,scriptData):
+    BaseDriver().get_driver().execute_async_script(scriptData)
+
+@step('store value from "(.*)" into "(.*)"')
+def storeValueIntoVariable(context, loc, text):
+    storeValue = PAFWebElement(loc).get_property('value')
+    print("value >>>>>>>>>>>>>>>>>> : ",storeValue)
+    ConfigurationsManager().set_object_for_key(text, storeValue)
+
+@step('store text from "(.*)" into "(.*)"')
+def storeTextIntoVariable(context, loc, text):
+    storeText = PAFWebElement(loc).text
+    print("text >>>>>>>>>>>>>>>>>>>>>>>>>>> : ",storeText)
+    ConfigurationsManager().set_object_for_key(text, storeText)
+
+@step('store title into "(.*)"')
+def storeTitleIntoVariable(context,text):
+    storeTitle = BaseDriver().get_driver().title
+    print("title >>>>>>>>>>>>>>>>>>>>>>> : ",storeTitle)
+    ConfigurationsManager().set_object_for_key(text, storeTitle)
 
 def typeBy(target):
     x = target.split("=")

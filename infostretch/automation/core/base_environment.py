@@ -1,5 +1,7 @@
 from behave.model_core import Status
 import os
+import platform
+import json
 import six
 import re
 from infostretch.automation.core.message_type import MessageType
@@ -15,11 +17,13 @@ from infostretch.automation.formatter.qaf_report.scenario.selenium_log import Se
 from infostretch.automation.formatter.qaf_report.step.step import Step
 from infostretch.automation.util.datetime_util import date_time, current_timestamp
 from infostretch.automation.util.directory_util import create_directory
+from infostretch.automation.core.configurations_manager import ConfigurationsManager
 
 OUTPUT_TEST_RESULTS_DIR = 'test-results'
 
 
 class BaseEnvironment:
+
     def __init__(self):
         self.current_feature = None
         self.current_scenario = None
@@ -40,6 +44,7 @@ class BaseEnvironment:
         BaseDriver().stop_driver()
 
     def before_feature(self, context, feature):
+        envInfoDetails={"browser-desired-capabilities": {},"browser-actual-capabilities": {},"isfw-build-info": {},"run-parameters": {},"execution-env-info": {}}
         current_feature_directory = os.path.join(os.getenv('REPORT_DIR'), 'json', re.sub(
             '[^A-Za-z0-9]+', ' - ', re.sub('.feature', '', feature.filename)))
         create_directory(current_feature_directory)
@@ -50,6 +55,41 @@ class BaseEnvironment:
 
         FeatureOverView().startTime = current_timestamp()
         FeatureOverView().add_class(feature.name)
+        # driver_name = str(ConfigurationsManager().get_str_for_key('driver.name'))
+        # driver_name[:str(driver_name).lower().index('driver')]
+        envInfoDetails["browser-desired-capabilities"]["browserName"] = BaseDriver().get_driver().capabilities['browserName']
+        envInfoDetails["browser-desired-capabilities"]["cssSelectorsEnabled"]= "true"
+        envInfoDetails["browser-desired-capabilities"]["javascriptEnabled"]= "true"
+        envInfoDetails["browser-desired-capabilities"]["takesScreenshot"]= "true"
+        envInfoDetails["browser-desired-capabilities"]["platform"] = str(ConfigurationsManager().get_str_for_key('platform'))
+        envInfoDetails["browser-desired-capabilities"]["version"] = BaseDriver().get_driver().capabilities['browserVersion']
+        json_object = BaseDriver().get_driver().capabilities
+        pairs = json_object.items()
+        for key, value in pairs:
+            # print(str(value))
+            envInfoDetails["browser-actual-capabilities"][key]= str(value)
+
+        envInfoDetails["isfw-build-info"]["qaf-Type"] = "core"
+        envInfoDetails["isfw-build-info"]["qaf-Build-Time"] = current_timestamp()
+        envInfoDetails["isfw-build-info"]["qaf-Version"] = "3.0"
+
+        envInfoDetails["run-parameters"]["resources"] = str(ConfigurationsManager().get_str_for_key('env.resources'))
+        envInfoDetails["run-parameters"]["file.feature"] = "feature/"+ str(ConfigurationsManager().get_str_for_key('platform'))
+        envInfoDetails["run-parameters"]["baseurl"] = str(ConfigurationsManager().get_str_for_key('env.baseurl'))
+        
+        # envInfoDetails["execution-env-info"]["java.arch"] = "64"
+        # envInfoDetails["execution-env-info"]["java.vendor"] = "Oracle Corporation 22"
+        envInfoDetails["execution-env-info"]["python.version"] = platform.python_version()
+        envInfoDetails["execution-env-info"]["os.arch"] = platform.processor()
+        envInfoDetails["execution-env-info"]["host"] = platform.node()
+        envInfoDetails["execution-env-info"]["os.name"] = platform.platform()
+        envInfoDetails["execution-env-info"]["user.name"] = os.getlogin()
+        envInfoDetails["execution-env-info"]["os.version"] = platform.version()
+
+        # drivercap = json.loads(BaseDriver.__driver.capabilities)
+        # print(BaseDriver().get_driver().capabilities['browserName'])
+        FeatureOverView().add_envInfo(envInfoDetails)
+
 
     def after_feature(self, context, feature):
         FeatureOverView().endTime = current_timestamp()
@@ -66,7 +106,16 @@ class BaseEnvironment:
 
     def after_scenario(self, context, scenario):
         status_name = scenario.status.name
-
+        if "##" in scenario.name:
+            x=(scenario.name).split("##")
+            scenario.name=x[0]
+            scenario.description=x[1]
+ 
+        if "##" in self.current_scenario.name:
+            x=(self.current_scenario.name).split("##")
+            self.current_scenario.name=x[0]
+            self.current_scenario.description=x[1]
+        
         if scenario.status == Status.failed:
             steps = scenario.steps
             for step in steps:
@@ -104,7 +153,6 @@ class BaseEnvironment:
         obj_meta_data.reference = six.text_type(scenario.location)
         obj_meta_data.referece = six.text_type(scenario.location)
         obj_meta_data.groups = scenario.effective_tags
-
         self.obj_scenario_meta_info.metaData = obj_meta_data.to_json_dict()
         self.obj_scenario_meta_info.close()
 
