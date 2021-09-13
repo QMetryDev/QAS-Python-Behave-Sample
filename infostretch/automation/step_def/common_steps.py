@@ -17,6 +17,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 #config.read('ConfigFile.properties')
 import json
+import base64
 
 use_step_matcher('re')
 def process(text):
@@ -490,9 +491,9 @@ def acceptAlert(self):
 def dismissAlert(self):
     BaseDriver().get_driver().switch_to.alert.dismiss()
 
-@step('getAlertText')
-def getAlertText(self):
-    BaseDriver().get_driver().switch_to.alert.text
+@step('getAlertText "(.*)"')
+def getAlertText(context,input):
+    ConfigurationsManager().set_object_for_key(input, BaseDriver().get_driver().switch_to.alert.text)
 
 @step('setAlertText "(.*)"')
 def setAlertText(context, text) :
@@ -597,3 +598,10 @@ def Find_PAFWebElement(by,locator):
         return rdata
     else:
         print("Type of element is not recognised")
+
+@step('sendEncryptedKeys "(.*)" into "(.*)"')
+def sendEncryptedKeys(context,text, loc):
+    base64_bytes = text.encode('ascii')
+    message_bytes = base64.b64decode(base64_bytes)
+    message = message_bytes.decode('ascii')
+    PAFWebElement(loc).send_keys(process(message))
